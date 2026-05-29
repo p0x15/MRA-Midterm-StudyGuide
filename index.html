@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MRA Midterm Study Guide</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>MRA Midterm Study Guide</h1>
+    <p class="sub">Market Research &amp; Analytics · Class 1–12 · Exam June 2, 2026</p>
+  </header>
+
+  <main>
+    <!-- Controls -->
+    <section class="controls">
+      <div class="control-group">
+        <label for="block-select">Block</label>
+        <select id="block-select"></select>
+      </div>
+      <div class="control-group">
+        <label>Mode</label>
+        <div class="mode-toggle">
+          <button id="mode-flashcards" class="mode-btn active">Flashcards</button>
+          <button id="mode-mcq" class="mode-btn">Multiple Choice</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress -->
+    <div id="progress" class="progress"></div>
+
+    <!-- Practice area -->
+    <section id="practice"></section>
+
+    <!-- Footer nav -->
+    <nav class="nav">
+      <button id="prev-btn" class="nav-btn">‹ Prev</button>
+      <button id="shuffle-btn" class="nav-btn">⤨ Shuffle</button>
+      <button id="next-btn" class="nav-btn">Next ›</button>
+    </nav>
+  </main>
+
+  <!-- Data blocks: add one line per block -->
+  <script src="data/block1.js"></script>
+
+  <!-- App -->
+  <script src="app.js"></script>
+</body>
+</html>

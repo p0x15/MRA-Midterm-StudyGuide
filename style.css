@@ -1,0 +1,167 @@
+:root {
+  --bg: #0f1115;
+  --surface: #1a1d24;
+  --surface-2: #242833;
+  --border: #2e333f;
+  --text: #e8eaed;
+  --muted: #9aa0ac;
+  --accent: #5b8def;
+  --accent-2: #3ddc97;
+  --wrong: #ef5b6b;
+  --shadow: 0 4px 20px rgba(0,0,0,.35);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  padding: 0 16px 48px;
+  -webkit-font-smoothing: antialiased;
+}
+
+header {
+  text-align: center;
+  padding: 28px 0 18px;
+}
+header h1 { font-size: 1.5rem; font-weight: 700; }
+header .sub { color: var(--muted); font-size: .85rem; margin-top: 4px; }
+
+main { max-width: 680px; margin: 0 auto; }
+
+/* Controls */
+.controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+.control-group { display: flex; flex-direction: column; gap: 6px; }
+.control-group label {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  color: var(--muted);
+}
+select {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  font-size: .95rem;
+  min-width: 220px;
+}
+.mode-toggle { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.mode-btn {
+  background: transparent;
+  color: var(--muted);
+  border: none;
+  padding: 9px 16px;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+}
+.mode-btn.active { background: var(--accent); color: #fff; font-weight: 600; }
+
+/* Progress */
+.progress {
+  text-align: center;
+  color: var(--muted);
+  font-size: .82rem;
+  margin-bottom: 12px;
+  min-height: 1.2em;
+}
+
+/* Practice area */
+#practice { min-height: 280px; }
+
+/* Flashcard */
+.flashcard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 36px 28px;
+  min-height: 240px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  transition: transform .12s;
+}
+.flashcard:active { transform: scale(.99); }
+.flashcard .card-label {
+  font-size: .7rem;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.flashcard .card-content { font-size: 1.25rem; font-weight: 500; }
+.flashcard.is-answer .card-content { font-size: 1.05rem; font-weight: 400; color: var(--text); }
+.flashcard .tap-hint { margin-top: 20px; font-size: .75rem; color: var(--muted); }
+
+/* MCQ */
+.mcq {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 26px 24px;
+}
+.mcq .question { font-size: 1.1rem; font-weight: 600; margin-bottom: 18px; }
+.mcq .options { display: flex; flex-direction: column; gap: 10px; }
+.option {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 13px 16px;
+  font-size: .95rem;
+  text-align: left;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.option:hover:not(:disabled) { border-color: var(--accent); }
+.option.correct { border-color: var(--accent-2); background: rgba(61,220,151,.12); }
+.option.wrong { border-color: var(--wrong); background: rgba(239,91,107,.12); }
+.option:disabled { cursor: default; }
+.explain {
+  margin-top: 16px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border-left: 3px solid var(--accent);
+  border-radius: 6px;
+  font-size: .9rem;
+  color: var(--muted);
+}
+.explain strong { color: var(--text); }
+
+/* Nav */
+.nav {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-top: 22px;
+}
+.nav-btn {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: .9rem;
+  cursor: pointer;
+  transition: border-color .15s;
+}
+.nav-btn:hover { border-color: var(--accent); }
+
+.empty { text-align: center; color: var(--muted); padding: 60px 20px; }
