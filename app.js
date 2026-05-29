@@ -1,5 +1,5 @@
-// MRA Midterm Study Guide — app logic
-// Data blocks register themselves on window.MRA_BLOCKS (see data/blockN.js)
+// MRA Midterm Master — app logic
+// Blocks self-register on window.MRA_BLOCKS (see data/blockN.js)
 
 (function () {
   "use strict";
@@ -8,142 +8,250 @@
 
   // ---- State ----
   let blockIndex = 0;
-  let mode = "flashcards"; // "flashcards" | "mcq"
-  let order = [];          // shuffled index order for current deck
-  let pos = 0;             // position within order
-  let flipped = false;     // flashcard front/back
-  let answered = false;    // mcq answered?
+  let mode = "";
+  let items = [];      // current working deck
+  let idx = 0;
+  let score = 0;
+  let matched = new Set();
+  let totalConcepts = 0;
+  let selTerm = null, selDef = null;
 
   // ---- Elements ----
   const blockSelect = document.getElementById("block-select");
-  const modeFlash = document.getElementById("mode-flashcards");
-  const modeMcq = document.getElementById("mode-mcq");
-  const practice = document.getElementById("practice");
-  const progress = document.getElementById("progress");
-  const prevBtn = document.getElementById("prev-btn");
-  const nextBtn = document.getElementById("next-btn");
-  const shuffleBtn = document.getElementById("shuffle-btn");
+  const menuView = document.getElementById("menu-view");
+  const gameView = document.getElementById("game-view");
+  const gameTitle = document.getElementById("game-title");
+  const scoreDisplay = document.getElementById("score-display");
+  const gameContainer = document.getElementById("game-container");
+  const progressContainer = document.getElementById("progress-container");
+  const progressBar = document.getElementById("progress-bar");
+
+  const MODE_TITLES = { flashcards: "🗂️ Flashcards", match: "🔗 Connect", quiz: "❓ Quiz", reto: "🔥 Application" };
 
   // ---- Helpers ----
-  function currentBlock() { return blocks[blockIndex]; }
-  function currentDeck() {
-    const b = currentBlock();
-    return mode === "flashcards" ? b.flashcards : b.mcqs;
+  const block = () => blocks[blockIndex];
+  const shuffle = (a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  const setProgress = (p) => { progressBar.style.width = `${p}%`; };
+  const setScore = (delta) => { score += delta; scoreDisplay.innerText = `Score: ${score}`; };
+
+  function showMenu() {
+    menuView.classList.add("active"); menuView.classList.remove("hidden");
+    gameView.classList.add("hidden"); gameView.classList.remove("active");
   }
-  function shuffle(arr) {
-    const a = arr.slice();
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-  function buildOrder() {
-    const deck = currentDeck() || [];
-    order = deck.map((_, i) => i); // natural order by default
-    pos = 0;
-    flipped = false;
-    answered = false;
+  function showGame(m) {
+    mode = m; score = 0; idx = 0; setScore(0);
+    gameTitle.innerText = MODE_TITLES[m];
+    menuView.classList.add("hidden"); menuView.classList.remove("active");
+    gameView.classList.add("active"); gameView.classList.remove("hidden");
+    gameContainer.innerHTML = "";
+    setProgress(0);
+    progressContainer.classList.toggle("hidden", m === "flashcards");
+
+    if (m === "flashcards") startFlashcards();
+    else if (m === "match") startMatch();
+    else if (m === "quiz") startQuiz();
+    else if (m === "reto") startReto();
   }
 
-  // ---- Render ----
-  function render() {
-    const deck = currentDeck();
-    if (!deck || deck.length === 0) {
-      practice.innerHTML = '<div class="empty">No content for this block yet.</div>';
-      progress.textContent = "";
-      return;
-    }
-    const item = deck[order[pos]];
-    progress.textContent = `${currentBlock().classes} · ${mode === "flashcards" ? "Flashcard" : "Question"} ${pos + 1} / ${deck.length}`;
-    if (mode === "flashcards") renderFlashcard(item);
-    else renderMcq(item);
+  function emptyMsg(what) {
+    gameContainer.innerHTML = `<div class="result"><h2>Nothing here yet</h2><p style="color:var(--text-muted)">This block has no ${what} yet.</p><div class="next-wrap"><button class="btn btn-ghost" id="m-back">← Menu</button></div></div>`;
+    document.getElementById("m-back").addEventListener("click", showMenu);
   }
 
-  function renderFlashcard(card) {
-    const label = flipped ? "Answer" : "Term / Question";
-    const content = flipped ? card.a : card.q;
-    practice.innerHTML = `
-      <div class="flashcard ${flipped ? "is-answer" : ""}" id="card">
-        <div class="card-label">${label}</div>
-        <div class="card-content">${content}</div>
-        <div class="tap-hint">${flipped ? "tap to see term" : "tap to reveal answer"}</div>
+  // ---- Flashcards ----
+  function startFlashcards() {
+    const c = block().concepts || [];
+    if (!c.length) return emptyMsg("flashcards");
+    items = shuffle(c); idx = 0; renderFlashcard();
+  }
+  function renderFlashcard() {
+    const it = items[idx];
+    gameContainer.innerHTML = `
+      <div class="flashcard-container" id="fc">
+        <div class="flashcard">
+          <div class="card-face card-front">
+            <h2>${esc(it.term)}</h2>
+            <div class="card-hint">click to reveal</div>
+          </div>
+          <div class="card-face card-back">
+            <p>${esc(it.definition)}</p>
+            ${it.details ? `<p style="font-size:0.85rem;margin-top:1rem;color:var(--text-muted)">${esc(it.details)}</p>` : ""}
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn btn-ghost" id="fc-prev">‹ Prev</button>
+        <span class="counter">${idx + 1} / ${items.length}</span>
+        <button class="btn btn-primary" id="fc-next">Next ›</button>
       </div>`;
-    document.getElementById("card").addEventListener("click", () => {
-      flipped = !flipped;
-      render();
+    document.getElementById("fc").addEventListener("click", () => {
+      document.querySelector(".flashcard").classList.toggle("flipped");
     });
+    document.getElementById("fc-prev").addEventListener("click", () => { if (idx > 0) { idx--; renderFlashcard(); } });
+    document.getElementById("fc-next").addEventListener("click", () => { if (idx < items.length - 1) { idx++; renderFlashcard(); } });
   }
 
-  function renderMcq(q) {
-    const opts = q.options.map((opt, i) =>
-      `<button class="option" data-i="${i}" ${answered ? "disabled" : ""}>${opt}</button>`
-    ).join("");
-    practice.innerHTML = `
-      <div class="mcq">
-        <div class="question">${q.q}</div>
-        <div class="options">${opts}</div>
-        <div id="explain-slot"></div>
-      </div>`;
+  // ---- Match / Connect ----
+  function startMatch() {
+    const all = block().concepts || [];
+    if (all.length < 2) return emptyMsg("concepts to match");
+    matched = new Set(); totalConcepts = all.length;
+    renderMatchRound();
+  }
+  function renderMatchRound() {
+    const all = block().concepts;
+    let remaining = all.filter((x) => !matched.has(x.term));
+    let selection = shuffle(remaining).slice(0, 5);
+    if (selection.length < 5) {
+      const need = 5 - selection.length;
+      const review = shuffle(all.filter((x) => matched.has(x.term))).slice(0, need);
+      selection = selection.concat(review);
+    }
+    items = selection;
+    setProgress((matched.size / totalConcepts) * 100);
 
-    practice.querySelectorAll(".option").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        if (answered) return;
-        answered = true;
-        const chosen = parseInt(btn.dataset.i, 10);
-        const optionEls = practice.querySelectorAll(".option");
-        optionEls.forEach((el, i) => {
-          el.disabled = true;
-          if (i === q.correct) el.classList.add("correct");
-          if (i === chosen && chosen !== q.correct) el.classList.add("wrong");
-        });
-        if (q.explain) {
-          document.getElementById("explain-slot").innerHTML =
-            `<div class="explain"><strong>${chosen === q.correct ? "Correct. " : "Not quite. "}</strong>${q.explain}</div>`;
+    const terms = shuffle(items), defs = shuffle(items);
+    gameContainer.innerHTML = `
+      <div class="match-grid">
+        <div class="match-column" id="terms-col">
+          ${terms.map((it) => `<div class="match-item" data-type="term" data-id="${esc(it.term)}">${esc(it.term)}</div>`).join("")}
+        </div>
+        <div class="match-column" id="defs-col">
+          ${defs.map((it) => `<div class="match-item" data-type="def" data-id="${esc(it.term)}">${esc(it.definition)}</div>`).join("")}
+        </div>
+      </div>
+      <div class="next-wrap"><button class="btn btn-primary" id="new-round">New round ⤨</button></div>`;
+    gameContainer.querySelectorAll(".match-item").forEach((el) => el.addEventListener("click", onMatchClick));
+    document.getElementById("new-round").addEventListener("click", renderMatchRound);
+    selTerm = null; selDef = null;
+  }
+  function onMatchClick(e) {
+    const el = e.currentTarget;
+    if (el.classList.contains("correct")) return;
+    const col = el.dataset.type === "term" ? document.getElementById("terms-col") : document.getElementById("defs-col");
+    col.querySelectorAll(".match-item").forEach((x) => x.classList.remove("selected"));
+    el.classList.add("selected");
+    if (el.dataset.type === "term") selTerm = el; else selDef = el;
+
+    if (selTerm && selDef) {
+      if (selTerm.dataset.id === selDef.dataset.id) {
+        selTerm.classList.remove("selected"); selDef.classList.remove("selected");
+        selTerm.classList.add("correct"); selDef.classList.add("correct");
+        setScore(10);
+        matched.add(selTerm.dataset.id);
+        setProgress((matched.size / totalConcepts) * 100);
+        selTerm = null; selDef = null;
+        if (gameContainer.querySelectorAll(".match-item.correct").length === items.length * 2) {
+          if (matched.size >= totalConcepts) setTimeout(matchComplete, 450);
         }
-      });
+      } else {
+        const a = selTerm, b = selDef;
+        a.classList.add("wrong"); b.classList.add("wrong");
+        setScore(-2);
+        selTerm = null; selDef = null;
+        setTimeout(() => { a.classList.remove("wrong", "selected"); b.classList.remove("wrong", "selected"); }, 450);
+      }
+    }
+  }
+  function matchComplete() {
+    gameContainer.innerHTML = `
+      <div class="result">
+        <h2>All concepts matched! 🎉</h2>
+        <div class="big-score">Score: ${score}</div>
+        <div class="next-wrap"><button class="btn btn-primary" id="r-menu">← Menu</button></div>
+      </div>`;
+    document.getElementById("r-menu").addEventListener("click", showMenu);
+  }
+
+  // ---- Quiz (hand-written MCQs) ----
+  function startQuiz() {
+    const m = block().mcqs || [];
+    if (!m.length) return emptyMsg("quiz questions");
+    items = shuffle(m); idx = 0; renderQuiz();
+  }
+  function renderQuiz() {
+    if (idx >= items.length) return finishScreen("Quiz complete!");
+    const q = items[idx];
+    setProgress((idx / items.length) * 100);
+    gameContainer.innerHTML = `
+      <div class="quiz-question">
+        <div class="quiz-kicker">Question ${idx + 1} of ${items.length}</div>
+        <h3>${esc(q.q)}</h3>
+      </div>
+      <div class="quiz-options">
+        ${q.options.map((opt, i) => `<button class="quiz-option" data-i="${i}">${esc(opt)}</button>`).join("")}
+      </div>
+      <div id="explain-slot"></div>`;
+    gameContainer.querySelectorAll(".quiz-option").forEach((btn) => {
+      btn.addEventListener("click", () => answerChoice(btn, parseInt(btn.dataset.i, 10), q.correct, q.explain));
     });
   }
 
-  // ---- Navigation ----
-  function next() {
-    const deck = currentDeck();
-    if (!deck || deck.length === 0) return;
-    pos = (pos + 1) % deck.length;
-    flipped = false;
-    answered = false;
-    render();
+  // ---- Reto / Application (scenarios) ----
+  function startReto() {
+    const s = block().scenarios || [];
+    if (!s.length) return emptyMsg("application questions");
+    // normalize scenarios to {q, options[], correct, explain}
+    items = shuffle(s).map((sc) => {
+      const opts = shuffle(sc.options.concat([sc.answer]));
+      return { q: sc.question, options: opts, correct: opts.indexOf(sc.answer), explain: sc.explain || "" };
+    });
+    idx = 0; renderReto();
   }
-  function prev() {
-    const deck = currentDeck();
-    if (!deck || deck.length === 0) return;
-    pos = (pos - 1 + deck.length) % deck.length;
-    flipped = false;
-    answered = false;
-    render();
-  }
-  function shuffleDeck() {
-    const deck = currentDeck();
-    if (!deck || deck.length === 0) return;
-    order = shuffle(order);
-    pos = 0;
-    flipped = false;
-    answered = false;
-    render();
+  function renderReto() {
+    if (idx >= items.length) return finishScreen("Application set complete!");
+    const q = items[idx];
+    setProgress((idx / items.length) * 100);
+    gameContainer.innerHTML = `
+      <div class="quiz-question">
+        <div class="quiz-kicker hot">🔥 Application ${idx + 1} of ${items.length}</div>
+        <h3>${esc(q.q)}</h3>
+      </div>
+      <div class="quiz-options">
+        ${q.options.map((opt, i) => `<button class="quiz-option" data-i="${i}">${esc(opt)}</button>`).join("")}
+      </div>
+      <div id="explain-slot"></div>`;
+    gameContainer.querySelectorAll(".quiz-option").forEach((btn) => {
+      btn.addEventListener("click", () => answerChoice(btn, parseInt(btn.dataset.i, 10), q.correct, q.explain));
+    });
   }
 
-  function setMode(m) {
-    mode = m;
-    modeFlash.classList.toggle("active", m === "flashcards");
-    modeMcq.classList.toggle("active", m === "mcq");
-    buildOrder();
-    render();
+  // shared answer handler for quiz + reto
+  function answerChoice(btn, chosen, correct, explain) {
+    const opts = gameContainer.querySelectorAll(".quiz-option");
+    opts.forEach((el, i) => {
+      el.disabled = true;
+      if (i === correct) el.classList.add("correct");
+      if (i === chosen && chosen !== correct) el.classList.add("wrong");
+    });
+    if (chosen === correct) setScore(mode === "reto" ? 20 : 10);
+    const slot = document.getElementById("explain-slot");
+    const verdict = chosen === correct ? "Correct. " : "Not quite. ";
+    slot.innerHTML = `
+      ${explain ? `<div class="explain"><strong>${verdict}</strong>${esc(explain)}</div>` : ""}
+      <div class="next-wrap"><button class="btn btn-primary" id="next-q">${idx + 1 >= items.length ? "See results" : "Next →"}</button></div>`;
+    document.getElementById("next-q").addEventListener("click", () => {
+      idx++;
+      if (mode === "quiz") renderQuiz(); else renderReto();
+    });
+  }
+
+  function finishScreen(title) {
+    setProgress(100);
+    gameContainer.innerHTML = `
+      <div class="result">
+        <h2>${title}</h2>
+        <div class="big-score">Score: ${score}</div>
+        <div class="next-wrap"><button class="btn btn-primary" id="r-menu">← Menu</button></div>
+      </div>`;
+    document.getElementById("r-menu").addEventListener("click", showMenu);
   }
 
   // ---- Init ----
   function init() {
-    if (blocks.length === 0) {
-      practice.innerHTML = '<div class="empty">No blocks loaded.</div>';
+    if (!blocks.length) {
+      gameContainer.innerHTML = '<div class="result"><h2>No blocks loaded</h2></div>';
       return;
     }
     blocks.forEach((b, i) => {
@@ -152,31 +260,11 @@
       opt.textContent = `Block ${b.id} — ${b.title} (${b.classes})`;
       blockSelect.appendChild(opt);
     });
-
-    blockSelect.addEventListener("change", (e) => {
-      blockIndex = parseInt(e.target.value, 10);
-      buildOrder();
-      render();
+    blockSelect.addEventListener("change", (e) => { blockIndex = parseInt(e.target.value, 10); });
+    document.querySelectorAll(".mode-btn").forEach((btn) => {
+      btn.addEventListener("click", () => showGame(btn.dataset.mode));
     });
-    modeFlash.addEventListener("click", () => setMode("flashcards"));
-    modeMcq.addEventListener("click", () => setMode("mcq"));
-    nextBtn.addEventListener("click", next);
-    prevBtn.addEventListener("click", prev);
-    shuffleBtn.addEventListener("click", shuffleDeck);
-
-    // keyboard: ← → to navigate, space to flip/reveal
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") next();
-      else if (e.key === "ArrowLeft") prev();
-      else if (e.key === " " && mode === "flashcards") {
-        e.preventDefault();
-        flipped = !flipped;
-        render();
-      }
-    });
-
-    buildOrder();
-    render();
+    document.getElementById("back-btn").addEventListener("click", showMenu);
   }
 
   init();

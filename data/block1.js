@@ -7,27 +7,27 @@ window.MRA_BLOCKS.push({
   title: "Foundations",
   classes: "Class 1–2",
 
-  flashcards: [
-    { q: "Market", a: "A place or platform where buyers and sellers interact." },
-    { q: "Marketing", a: "The process of understanding and fulfilling customer needs — including production, distribution, promotion, and selling." },
-    { q: "Market Research", a: "The systematic design, collection, analysis, and reporting of data relevant to a specific marketing situation facing an organization. (Kotler & Armstrong)" },
-    { q: "Marketing Analytics", a: "The process of collecting, managing, analyzing, and interpreting data using tools and technologies to generate insights that support marketing decisions and improve business performance." },
-    { q: "The 4 major steps of Market Research", a: "1) DEFINE the problem & research objectives → 2) DEVELOP the research plan → 3) IMPLEMENT (collect & analyze data) → 4) INTERPRET & report the findings." },
-    { q: "Tools vs. Technologies", a: "Technology = the method/approach for the task (e.g. a market survey). Tool = what executes it (e.g. Google Sheets). A survey is the technology; Sheets is the tool." },
-    { q: "Market Analysis vs. Market Analytics", a: "Analysis = the broad finding (e.g. 'sales fell 30% in 6 months'). Analytics = the granular, deeper insight (e.g. 'most loss came from mobile users aged 12–35')." },
-    { q: "Uses of Market Research & Analytics", a: "1) Identify what customers want/need/value. 2) Segment customers by age, behavior, lifestyle. 3) Track changes in industry/economy/technology. 4) Analyze effectiveness of campaigns, ads, channels." },
-    { q: "Market Research focuses on understanding the…", a: "CUSTOMER — who they are (demographics, interests, needs) and WHY they act that way (motivations, attitudes, challenges)." },
-    { q: "Marketing Analytics focuses on understanding…", a: "BEHAVIOR — WHAT customers do (clicks, purchases, interactions), patterns in real-time data, and predicting what they'll do next." },
-    { q: "Integration: Research vs. Analytics (the key pairing)", a: "Research explains the WHY; Analytics shows the WHAT and HOW. Combined → tailored products/experiences and a better customer journey." },
-    { q: "Long-term marketing decisions (5)", a: "Target Market Selection · Brand Positioning & Value Proposition · Product & Service Offering · Market Entry Strategy · Growth Strategy." },
-    { q: "Short-term marketing decisions (5)", a: "Marketing Budget Allocation · Pricing Strategy · Channel & Distribution Strategy · Promotional & Content Strategy · Marketing Team Structure." },
-    { q: "ROI (as a KPI)", a: "A broad KPI showing overall return — similar in scope to net sales." },
-    { q: "CAC", a: "Customer Acquisition Cost — the cost of acquiring a new customer." },
-    { q: "CLV", a: "Customer Lifetime Value — how valuable a customer is over the long term." },
-    { q: "3.2 — Identifying opportunities vs. tracking trends", a: "Market Research identifies opportunities (exploratory insight); Marketing Analytics tracks trends (real-time insight)." },
-    { q: "Amazon case — key lesson", a: "Having lots of data is good, but being able to USE it for smart decisions is what counts. Track everything — but too much data means nothing if you can't read and analyze it." }
+  // term ↔ definition — powers Flashcards, Conectar (match), and auto Quiz
+  concepts: [
+    { term: "Market", definition: "A place or platform where buyers and sellers interact." },
+    { term: "Marketing", definition: "The process of understanding and fulfilling customer needs — including production, distribution, promotion, and selling." },
+    { term: "Market Research", definition: "The systematic design, collection, analysis, and reporting of data relevant to a specific marketing situation. (Kotler & Armstrong)" },
+    { term: "Marketing Analytics", definition: "Collecting, managing, analyzing, and interpreting data using tools and technologies to generate insights that support marketing decisions and improve performance." },
+    { term: "The 4 steps of Market Research", definition: "Define → Develop → Implement → Interpret.", details: "Define the problem & objectives · Develop the plan · Implement (collect & analyze data) · Interpret & report findings." },
+    { term: "Technology vs. Tool", definition: "Technology = the method/approach (e.g. a market survey). Tool = what executes it (e.g. Google Sheets)." },
+    { term: "Market Analysis", definition: "The broad finding — e.g. 'sales fell 30% over six months'." },
+    { term: "Market Analytics (granular)", definition: "The deeper, granular insight — e.g. 'most of the loss came from mobile users aged 12–35'." },
+    { term: "Focus of Market Research", definition: "Understanding the CUSTOMER — who they are (demographics, needs) and WHY they act that way." },
+    { term: "Focus of Marketing Analytics", definition: "Understanding BEHAVIOR — WHAT customers do, patterns in real-time data, and predicting what's next." },
+    { term: "Research vs. Analytics (integration)", definition: "Research explains the WHY; Analytics shows the WHAT and HOW. Combined → tailored experiences." },
+    { term: "Long-term marketing decisions", definition: "Target market selection · brand positioning · product/service offering · market entry · growth strategy." },
+    { term: "Short-term marketing decisions", definition: "Budget allocation · pricing · channel/distribution · promotion/content · team structure." },
+    { term: "ROI", definition: "Return on Investment — a broad return KPI, similar in scope to net sales." },
+    { term: "CAC", definition: "Customer Acquisition Cost — the cost of acquiring a new customer." },
+    { term: "CLV", definition: "Customer Lifetime Value — how valuable a customer is over the long term." }
   ],
 
+  // Hand-written multiple choice — powers Quiz mode
   mcqs: [
     {
       q: "Which best defines Market Research?",
@@ -111,6 +111,46 @@ window.MRA_BLOCKS.push({
       ],
       correct: 1,
       explain: "Analytics = understanding behavior from real-time data and predicting next actions. The others are research (understanding the customer / the why)."
+    }
+  ],
+
+  // Application / scenario questions — powers Reto mode (open-ended exam style)
+  scenarios: [
+    {
+      question: "A company reports 'sales dropped 30% over six months.' An analyst then finds the drop is concentrated in mobile users aged 12–35. The second statement is an example of:",
+      answer: "Market analytics (granular insight)",
+      options: ["Market analysis (broad finding)", "A research objective", "A short-term pricing decision"],
+      explain: "Going from the broad number to the granular 'who/where' is analytics."
+    },
+    {
+      question: "A team runs interviews to understand WHY customers feel loyal to a brand. This work belongs to:",
+      answer: "Market research",
+      options: ["Marketing analytics", "Budget allocation", "Channel strategy"],
+      explain: "Understanding the WHY behind customer attitudes is the role of market research."
+    },
+    {
+      question: "Deciding which new country to enter over the next 3 years is a:",
+      answer: "Long-term marketing decision",
+      options: ["Short-term marketing decision", "Data-cleaning task", "Sampling technique"],
+      explain: "Market entry strategy is one of the five long-term decisions."
+    },
+    {
+      question: "A subscription app wants to know the long-term worth of an average user. Which KPI fits best?",
+      answer: "CLV",
+      options: ["CAC", "ROI", "CPM"],
+      explain: "CLV (Customer Lifetime Value) measures long-term worth; CAC is acquisition cost."
+    },
+    {
+      question: "An e-commerce dashboard shows real-time clickstream patterns and predicts next purchases. This capability is:",
+      answer: "Marketing analytics",
+      options: ["Market research", "A focus group", "A research brief"],
+      explain: "Real-time behavioral patterns + prediction = marketing analytics."
+    },
+    {
+      question: "Your manager says: 'Run a survey, built in Google Forms.' Which part is the TECHNOLOGY?",
+      answer: "The survey (the method)",
+      options: ["Google Forms (the tool)", "The laptop", "The internet connection"],
+      explain: "The survey is the technology/method; Google Forms is the tool that executes it."
     }
   ]
 });

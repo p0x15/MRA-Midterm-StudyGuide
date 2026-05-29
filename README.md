@@ -7,21 +7,30 @@ Two modes — **Flashcards** and **Multiple Choice** — built progressively, on
 - **Live:** enable GitHub Pages (Settings → Pages → Branch: `main`, folder `/root`), then open the published URL.
 - **Local:** just open `index.html` in a browser. No build step.
 
-## Controls
-- Pick a **Block** and a **Mode** at the top.
-- Flashcards: tap the card (or press **Space**) to flip.
-- MCQ: click an option to see the answer + explanation.
-- **← / →** keys or the buttons to move between cards; **Shuffle** to randomize.
+## Modes
+Pick a **block** on the menu, then choose a study mode:
+- 🗂️ **Flashcards** — 3D-flip cards, term ↔ definition
+- 🔗 **Connect** — match terms to definitions (5 pairs/round, scored)
+- ❓ **Quiz** — hand-written multiple choice with explanations
+- 🔥 **Application** — scenario questions in the open-ended exam style
+
+Score and a progress bar track each session; wrong answers shake.
 
 ## Structure
 ```
-index.html      shell + block <script> includes
-style.css       styles
-app.js          render logic (flashcards + MCQ)
+index.html      menu + game views, block <script> includes
+style.css       styles (Outfit font, glassmorphism, blue/green theme)
+app.js          all 4 modes, scoring, progress, completion
 data/blockN.js  content per block (self-registering)
 PLAN.md         build plan, block order, gap tracker
 ```
 
+Each block exposes three content arrays:
+```js
+concepts:  [ { term, definition, details? } ]      // flashcards + connect
+mcqs:      [ { q, options[], correct, explain } ]  // quiz
+scenarios: [ { question, answer, options[], explain } ] // application
+```
 Adding a block = create `data/blockN.js`, then add one `<script>` line in `index.html`.
 
 See [PLAN.md](PLAN.md) for the block roadmap and outstanding content gaps.

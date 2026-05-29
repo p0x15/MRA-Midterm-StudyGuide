@@ -3,44 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MRA Midterm Study Guide</title>
+  <title>MRA Midterm Master</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>MRA Midterm Study Guide</h1>
-    <p class="sub">Market Research &amp; Analytics · Class 1–12 · Exam June 2, 2026</p>
-  </header>
+  <div class="app-container">
+    <header>
+      <h1>MRA Midterm Master</h1>
+      <p>Market Research &amp; Analytics · Class 1–12 · Exam June 2</p>
+    </header>
 
-  <main>
-    <!-- Controls -->
-    <section class="controls">
-      <div class="control-group">
-        <label for="block-select">Block</label>
-        <select id="block-select"></select>
-      </div>
-      <div class="control-group">
-        <label>Mode</label>
-        <div class="mode-toggle">
-          <button id="mode-flashcards" class="mode-btn active">Flashcards</button>
-          <button id="mode-mcq" class="mode-btn">Multiple Choice</button>
+    <main id="main-content">
+      <!-- MENU -->
+      <div id="menu-view" class="view active">
+        <div class="block-picker">
+          <label for="block-select">Study block</label>
+          <select id="block-select"></select>
+        </div>
+
+        <h2>Choose your study mode</h2>
+        <div class="mode-grid">
+          <button class="card mode-btn" data-mode="flashcards">
+            <div class="icon">🗂️</div>
+            <h3>Flashcards</h3>
+            <p>Flip through key concepts one by one</p>
+          </button>
+          <button class="card mode-btn" data-mode="match">
+            <div class="icon">🔗</div>
+            <h3>Connect</h3>
+            <p>Match terms to their definitions</p>
+          </button>
+          <button class="card mode-btn" data-mode="quiz">
+            <div class="icon">❓</div>
+            <h3>Quiz</h3>
+            <p>Multiple-choice — test your recall</p>
+          </button>
+          <button class="card mode-btn" data-mode="reto">
+            <div class="icon">🔥</div>
+            <h3>Application</h3>
+            <p>Scenario questions (open-ended style)</p>
+          </button>
         </div>
       </div>
-    </section>
 
-    <!-- Progress -->
-    <div id="progress" class="progress"></div>
-
-    <!-- Practice area -->
-    <section id="practice"></section>
-
-    <!-- Footer nav -->
-    <nav class="nav">
-      <button id="prev-btn" class="nav-btn">‹ Prev</button>
-      <button id="shuffle-btn" class="nav-btn">⤨ Shuffle</button>
-      <button id="next-btn" class="nav-btn">Next ›</button>
-    </nav>
-  </main>
+      <!-- GAME -->
+      <div id="game-view" class="view hidden">
+        <div class="game-header">
+          <button class="back-btn" id="back-btn">← Menu</button>
+          <span id="game-title">Mode</span>
+          <span id="score-display">Score: 0</span>
+        </div>
+        <div id="progress-container" class="progress-container hidden">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="game-container"></div>
+      </div>
+    </main>
+  </div>
 
   <!-- Data blocks: add one line per block -->
   <script src="data/block1.js"></script>

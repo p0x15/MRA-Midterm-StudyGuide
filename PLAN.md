@@ -34,13 +34,14 @@ Two practice modes: **Flashcards** and **Multiple Choice**. Built **progressivel
 └── PLAN.md             # this file
 ```
 
-Each data entry shape:
+Each block exposes three content arrays (feeds 4 study modes):
 ```js
-// flashcard
-{ q: "Term or question", a: "Definition / answer" }
-// mcq
-{ q: "Question?", options: ["A","B","C","D"], correct: 2, explain: "Why" }
+concepts:  [ { term, definition, details? } ]           // Flashcards + Connect
+mcqs:      [ { q, options[], correct, explain } ]        // Quiz
+scenarios: [ { question, answer, options[], explain } ]  // Application (open-ended style)
 ```
+
+**Study modes:** 🗂️ Flashcards (3D flip) · 🔗 Connect (match) · ❓ Quiz (recall) · 🔥 Application (scenarios → the 15-mark open-ended prep).
 
 ---
 
