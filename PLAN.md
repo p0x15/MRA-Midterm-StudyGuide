@@ -103,12 +103,12 @@ Build in this sequence. A block is **done** when notes + slides are reconciled, 
 
 | # | Block | Gap | Source to extract from |
 |---|-------|-----|------------------------|
-| 1 | 1 | Class 2 importance themes 3.2–3.5 detail | MRA-Day2-M.pdf |
-| 2 | 2 | Research approaches detail (ethnographic, experimental) | MRA-Day4-M.pdf |
-| 3 | 3 | **Ethics content (whole topic)** | MRA-Day6-M.pdf |
-| 4 | 4 | IQR rule & Z-score method | MRA-Day7-8-M.pdf |
-| 5 | 5 | **Class 9 descriptive analysis (unfinished)** | MRA-Day9-M.pdf |
-| 6 | 5 | **Class 10 data visualization (empty)** | MRA-Day10-M.pdf |
+| 1 | 1 | ~~Class 2 importance themes 3.2–3.5 detail~~ ✅ pulled from slides | MRA-Day2-M.pdf |
+| 2 | 2 | ~~Research approaches detail (ethnographic, experimental)~~ ✅ done (slides 11–16) | MRA-Day4-M.pdf |
+| 3 | 3 | ~~Ethics content (whole topic)~~ ✅ done from slides (Day 6: ethics, 10 core issues, privacy laws) | MRA-Day6-M.pdf |
+| 4 | 4 | ~~IQR rule & Z-score method~~ ✅ done (slide 21) | MRA-Day7-8-M.pdf |
+| 5 | 5 | ~~Class 9 descriptive analysis (unfinished)~~ ✅ done from Day 9 slides | MRA-Day9-M.pdf |
+| 6 | 5 | ~~Class 10 data visualization (empty)~~ ✅ done (Day 9 viz + Day 10 chart matching) | MRA-Day10-M.pdf |
 
 ---
 
@@ -130,7 +130,10 @@ For each block, in order:
 |-------|:---:|:---:|:---:|
 | 0 — Site shell | — | ✅ | ▢ |
 | 1 — Foundations | ✅ | ✅ | ▢ |
-| 2 — Planning | ▢ | ▢ | ▢ |
-| 3 — Doing research | ▢ | ▢ | ▢ |
-| 4 — Data prep | ▢ | ▢ | ▢ |
-| 5 — Analysis & analytics | ▢ | ▢ | ▢ |
+| 2 — Planning | ✅ | ✅ | ▢ |
+| 3 — Doing research | ✅ | ✅ | ▢ |
+| 4 — Data prep | ✅ | ✅ | ▢ |
+| 5 — Analysis & analytics | ✅ | ✅ | ▢ |
+
+**All 5 blocks built — 114 concepts, 46 MCQs, 38 application scenarios.**
+Class→deck mapping for Block 5: Class 9 = Day 9 · Class 10 = Day 10 · Class 11 = Day 12 · Class 12 = Day 13 (Day 11 had no class).

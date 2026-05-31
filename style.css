@@ -24,6 +24,8 @@ body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
 }
 
 .app-container {
@@ -73,12 +75,41 @@ select {
   padding: 11px 16px;
   font-family: inherit;
   font-size: 1rem;
-  min-width: 280px;
+  width: 100%;
+  max-width: 340px;
   text-align: center;
   cursor: pointer;
 }
 
 #menu-view h2 { text-align: center; font-weight: 600; margin-bottom: 0.5rem; }
+
+/* Menu progress summary */
+.menu-progress {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.6rem;
+}
+.mp-head { display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; margin-bottom: 0.6rem; }
+.mp-head strong { color: var(--secondary); }
+.mp-reset {
+  background: none; border: 1px solid rgba(255,255,255,0.14);
+  color: var(--text-muted); border-radius: 999px;
+  padding: 0.3rem 0.8rem; font-family: inherit; font-size: 0.72rem; cursor: pointer; transition: all 0.2s;
+}
+.mp-reset:hover { border-color: var(--error); color: var(--text-main); }
+.mp-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+.mp-chip {
+  font-size: 0.72rem; color: var(--text-muted);
+  background: var(--surface-2); border: 1px solid var(--border);
+  border-radius: 999px; padding: 0.2rem 0.6rem;
+}
+
+/* Generic progress bar (menu + flashcard) */
+.pbar { width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+.pbar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 3px; transition: width 0.3s ease; }
 
 /* Menu Grid */
 .mode-grid {
@@ -129,15 +160,16 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
 
 /* Flashcards (3D flip) */
 .flashcard-container {
-  perspective: 1000px;
+  perspective: 1200px;
   width: 100%;
   max-width: 540px;
-  height: 300px;
   margin: 0 auto;
   cursor: pointer;
 }
 .flashcard {
-  position: relative; width: 100%; height: 100%;
+  display: grid;            /* stack both faces in one cell so height = tallest face */
+  width: 100%;
+  min-height: 300px;
   text-align: center;
   transition: transform 0.6s;
   transform-style: preserve-3d;
@@ -146,7 +178,9 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
 }
 .flashcard.flipped { transform: rotateY(180deg); }
 .card-face {
-  position: absolute; width: 100%; height: 100%;
+  grid-area: 1 / 1;        /* both faces share the same grid cell */
+  position: relative;
+  width: 100%;
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
   overflow: hidden;
   display: flex; flex-direction: column;
@@ -184,6 +218,31 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
   color: var(--secondary);
   font-weight: 700;
 }
+/* Example shown below the definition, indented like a bullet */
+.card-example {
+  margin-top: 1rem;
+  max-width: 92%;
+  padding-left: 1.4rem;
+  position: relative;
+  text-align: left;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--text-muted);
+}
+.card-example::before {
+  content: "›";
+  position: absolute; left: 0.3rem;
+  color: var(--secondary);
+  font-weight: 700;
+}
+.card-example .ex-label {
+  color: var(--secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.05em;
+  margin-right: 0.35rem;
+}
 .card-hint {
   font-size: 0.72rem; color: var(--text-muted);
   margin-top: 1.2rem; text-transform: uppercase; letter-spacing: 1px;
@@ -197,6 +256,42 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
   opacity: 0.6;
   letter-spacing: 0.02em;
 }
+
+/* Flashcard top bar: order + focus toggles */
+.fc-bar { display: flex; justify-content: center; gap: 0.6rem; margin-bottom: 0.7rem; flex-wrap: wrap; }
+.order-btn {
+  background: var(--card-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-family: inherit; font-size: 0.82rem;
+  cursor: pointer; transition: all 0.2s;
+}
+.order-btn:hover { border-color: var(--primary); color: var(--text-main); }
+.fc-progress { text-align: center; font-size: 0.78rem; color: var(--text-muted); margin: 0 auto 1rem; max-width: 540px; }
+.fc-progress .pbar { margin-top: 0.35rem; }
+
+/* Mastery buttons under the flashcard */
+.mastery { display: flex; justify-content: center; gap: 0.8rem; margin-top: 1rem; }
+.m-btn {
+  border-radius: 10px; padding: 0.7rem 1.4rem; font-family: inherit; font-weight: 600;
+  font-size: 0.9rem; cursor: pointer; border: 1px solid; background: transparent; transition: all 0.2s;
+}
+.m-review { color: #f0b34a; border-color: rgba(240,179,74,0.5); }
+.m-review:hover { background: rgba(240,179,74,0.14); }
+.m-known { color: var(--secondary); border-color: rgba(61,220,151,0.5); }
+.m-known:hover { background: rgba(61,220,151,0.14); }
+
+/* Mastery badge on the card */
+.card-badge {
+  position: absolute; top: 12px; left: 16px;
+  font-size: 0.68rem; font-weight: 600;
+  padding: 0.15rem 0.5rem; border-radius: 999px;
+}
+.card-badge.known { color: var(--secondary); background: rgba(61,220,151,0.15); }
+.card-badge.review { color: #f0b34a; background: rgba(240,179,74,0.15); }
 
 .controls { display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 2rem; }
 .counter { color: var(--text-muted); font-size: 0.95rem; min-width: 70px; text-align: center; }
@@ -254,7 +349,7 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
 }
 .explain strong { color: var(--text-main); }
 .explain-source { display: block; margin-top: 0.6rem; font-size: 0.72rem; opacity: 0.65; }
-.next-wrap { display: flex; justify-content: center; margin-top: 1.5rem; }
+.next-wrap { display: flex; justify-content: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.5rem; }
 
 .result { text-align: center; padding: 2rem 1rem; }
 .result h2 { font-size: 1.8rem; margin-bottom: 0.6rem; }
@@ -280,7 +375,49 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
 }
 
 @media (max-width: 520px) {
-  header h1 { font-size: 2rem; }
-  .match-item { font-size: 0.8rem; }
-  .app-container { padding: 1.5rem 1rem 2.5rem; }
+  header { padding: 18px 0 14px; }
+  header h1 { font-size: 1.8rem; }
+  header .sub { font-size: 0.78rem; }
+  .app-container { padding: 1.25rem 0.9rem 2.5rem; }
+
+  /* Mode cards: 2 per row on phones */
+  .mode-grid { grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .card { padding: 1.3rem 1rem; }
+  .icon { font-size: 2.1rem; }
+  .card h3 { font-size: 1rem; }
+  .card p { font-size: 0.8rem; }
+
+  /* Flashcards */
+  .flashcard-container { max-width: 100%; }
+  .card-front h2 { font-size: 1.3rem; }
+  .card-back p { font-size: 0.98rem; }
+  .card-list li, .card-example { font-size: 0.92rem; }
+  .card-face { padding: 1.5rem 1.2rem; }
+  .controls { gap: 0.6rem; }
+  .btn { padding: 0.7rem 1rem; font-size: 0.88rem; }
+  .m-btn { padding: 0.7rem 1rem; flex: 1; }
+  .mastery { gap: 0.6rem; }
+
+  /* Connect mode: keep 2 columns but tighter + min tap height */
+  .match-grid { gap: 0.6rem; }
+  .match-item { font-size: 0.76rem; padding: 0.7rem 0.6rem; min-height: 48px; display: flex; align-items: center; }
+
+  /* Quiz */
+  .quiz-question h3 { font-size: 1.1rem; }
+  .quiz-option { padding: 0.95rem 1rem; font-size: 0.92rem; }
+  .quiz-option:hover:not(:disabled) { transform: none; } /* no slide on touch */
+
+  /* Menu progress */
+  .menu-progress { padding: 0.9rem 1rem; }
+  .mp-head { font-size: 0.85rem; }
+
+  /* Game header (Menu / title / Score) */
+  .game-header { font-size: 0.9rem; gap: 0.4rem; }
+  #game-title { font-size: 0.92rem; text-align: center; }
+  .back-btn, #score-display { font-size: 0.85rem; white-space: nowrap; }
+}
+
+@media (max-width: 360px) {
+  .mode-grid { grid-template-columns: 1fr; }
+  .card-front h2 { font-size: 1.18rem; }
 }
