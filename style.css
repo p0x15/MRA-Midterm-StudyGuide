@@ -306,6 +306,7 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
 .btn-ghost:hover { border-color: var(--primary); }
 
 /* Matching Game */
+.match-status { text-align: center; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.9rem; }
 .match-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
 .match-column { display: flex; flex-direction: column; gap: 0.8rem; }
 .match-item {

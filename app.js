@@ -249,6 +249,7 @@
     setBar((matched.size / totalConcepts) * 100);
     const terms = shuffle(items), defs = shuffle(items);
     gameContainer.innerHTML = `
+      <div class="match-status" id="match-status">Matched ${matched.size} / ${totalConcepts}</div>
       <div class="match-grid">
         <div class="match-column" id="terms-col">
           ${terms.map((it) => `<div class="match-item" data-type="term" data-id="${esc(it.term)}">${esc(it.term)}</div>`).join("")}
@@ -257,7 +258,7 @@
           ${defs.map((it) => `<div class="match-item" data-type="def" data-id="${esc(it.term)}">${esc(it.definition)}</div>`).join("")}
         </div>
       </div>
-      <div class="next-wrap"><button class="btn btn-primary" id="new-round">New round ⤨</button></div>`;
+      <div class="next-wrap"><button class="btn btn-ghost" id="new-round">Skip / shuffle ⤨</button></div>`;
     gameContainer.querySelectorAll(".match-item").forEach((el) => el.addEventListener("click", onMatchClick));
     document.getElementById("new-round").addEventListener("click", renderMatchRound);
     selTerm = null; selDef = null;
@@ -276,9 +277,13 @@
         setScore(10);
         matched.add(selTerm.dataset.id);
         setBar((matched.size / totalConcepts) * 100);
+        const st = document.getElementById("match-status");
+        if (st) st.textContent = `Matched ${matched.size} / ${totalConcepts}`;
         selTerm = null; selDef = null;
+        // round finished: auto-advance to the next 5 (or finish when everything is matched)
         if (gameContainer.querySelectorAll(".match-item.correct").length === items.length * 2) {
-          if (matched.size >= totalConcepts) setTimeout(matchComplete, 450);
+          if (matched.size >= totalConcepts) setTimeout(matchComplete, 500);
+          else setTimeout(renderMatchRound, 650);
         }
       } else {
         const a = selTerm, b = selDef;
