@@ -68,6 +68,10 @@
   function renderFlashcard() {
     const it = items[idx];
     const srcTag = it.source ? `<div class="card-source">${esc(it.source)}</div>` : "";
+    // list-type answers render one item per row for easier reading
+    const back = it.list
+      ? `${it.lead ? `<p class="card-lead">${esc(it.lead)}</p>` : ""}<ul class="card-list">${it.list.map((x) => `<li>${esc(x)}</li>`).join("")}</ul>`
+      : `<p>${esc(it.definition)}</p>${it.details ? `<p style="font-size:0.85rem;margin-top:1rem;color:var(--text-muted)">${esc(it.details)}</p>` : ""}`;
     gameContainer.innerHTML = `
       <div class="flashcard-container" id="fc">
         <div class="flashcard">
@@ -77,8 +81,7 @@
             ${srcTag}
           </div>
           <div class="card-face card-back">
-            <p>${esc(it.definition)}</p>
-            ${it.details ? `<p style="font-size:0.85rem;margin-top:1rem;color:var(--text-muted)">${esc(it.details)}</p>` : ""}
+            ${back}
             ${srcTag}
           </div>
         </div>

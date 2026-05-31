@@ -162,6 +162,28 @@ h3 { margin-bottom: 0.4rem; font-weight: 600; }
 }
 .card-front h2 { font-size: 1.6rem; }
 .card-back p { font-size: 1.05rem; line-height: 1.5; }
+/* List-type answers: one item per row */
+.card-lead {
+  font-size: 1.05rem; font-weight: 600;
+  margin-bottom: 1rem; text-align: center;
+}
+.card-list {
+  list-style: none;
+  text-align: left;
+  max-width: 90%;
+  display: flex; flex-direction: column; gap: 0.55rem;
+}
+.card-list li {
+  position: relative;
+  padding-left: 1.4rem;
+  font-size: 1.02rem; line-height: 1.35;
+}
+.card-list li::before {
+  content: "›";
+  position: absolute; left: 0.3rem;
+  color: var(--secondary);
+  font-weight: 700;
+}
 .card-hint {
   font-size: 0.72rem; color: var(--text-muted);
   margin-top: 1.2rem; text-transform: uppercase; letter-spacing: 1px;
