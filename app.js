@@ -412,10 +412,16 @@
       opt.textContent = `Block ${b.id} — ${b.title} (${b.classes})`;
       blockSelect.appendChild(opt);
     });
-    blockSelect.addEventListener("change", (e) => {
-      if (e.target.value === "all") { selectionAll = true; }
-      else { selectionAll = false; blockIndex = parseInt(e.target.value, 10); }
-    });
+    // Keep JS state in sync with the actual <select> value (fixes the default/reload
+    // case where the menu shows "All blocks" but state still pointed at Block 1).
+    function syncSelection() {
+      const v = blockSelect.value;
+      if (v === "all") { selectionAll = true; }
+      else { selectionAll = false; blockIndex = parseInt(v, 10); }
+    }
+    blockSelect.value = "all";   // make the visible default explicit
+    syncSelection();
+    blockSelect.addEventListener("change", syncSelection);
     document.querySelectorAll(".mode-btn").forEach((btn) => {
       btn.addEventListener("click", () => showGame(btn.dataset.mode));
     });
