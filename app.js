@@ -67,16 +67,19 @@
   }
   function renderFlashcard() {
     const it = items[idx];
+    const srcTag = it.source ? `<div class="card-source">${esc(it.source)}</div>` : "";
     gameContainer.innerHTML = `
       <div class="flashcard-container" id="fc">
         <div class="flashcard">
           <div class="card-face card-front">
             <h2>${esc(it.term)}</h2>
             <div class="card-hint">click to reveal</div>
+            ${srcTag}
           </div>
           <div class="card-face card-back">
             <p>${esc(it.definition)}</p>
             ${it.details ? `<p style="font-size:0.85rem;margin-top:1rem;color:var(--text-muted)">${esc(it.details)}</p>` : ""}
+            ${srcTag}
           </div>
         </div>
       </div>
@@ -184,7 +187,7 @@
       </div>
       <div id="explain-slot"></div>`;
     gameContainer.querySelectorAll(".quiz-option").forEach((btn) => {
-      btn.addEventListener("click", () => answerChoice(btn, parseInt(btn.dataset.i, 10), q.correct, q.explain));
+      btn.addEventListener("click", () => answerChoice(btn, parseInt(btn.dataset.i, 10), q.correct, q.explain, q.source));
     });
   }
 
@@ -192,10 +195,10 @@
   function startReto() {
     const s = block().scenarios || [];
     if (!s.length) return emptyMsg("application questions");
-    // normalize scenarios to {q, options[], correct, explain}
+    // normalize scenarios to {q, options[], correct, explain, source}
     items = shuffle(s).map((sc) => {
       const opts = shuffle(sc.options.concat([sc.answer]));
-      return { q: sc.question, options: opts, correct: opts.indexOf(sc.answer), explain: sc.explain || "" };
+      return { q: sc.question, options: opts, correct: opts.indexOf(sc.answer), explain: sc.explain || "", source: sc.source || "" };
     });
     idx = 0; renderReto();
   }
@@ -213,12 +216,12 @@
       </div>
       <div id="explain-slot"></div>`;
     gameContainer.querySelectorAll(".quiz-option").forEach((btn) => {
-      btn.addEventListener("click", () => answerChoice(btn, parseInt(btn.dataset.i, 10), q.correct, q.explain));
+      btn.addEventListener("click", () => answerChoice(btn, parseInt(btn.dataset.i, 10), q.correct, q.explain, q.source));
     });
   }
 
   // shared answer handler for quiz + reto
-  function answerChoice(btn, chosen, correct, explain) {
+  function answerChoice(btn, chosen, correct, explain, source) {
     const opts = gameContainer.querySelectorAll(".quiz-option");
     opts.forEach((el, i) => {
       el.disabled = true;
@@ -228,8 +231,9 @@
     if (chosen === correct) setScore(mode === "reto" ? 20 : 10);
     const slot = document.getElementById("explain-slot");
     const verdict = chosen === correct ? "Correct. " : "Not quite. ";
+    const srcLine = source ? `<span class="explain-source">📄 ${esc(source)}</span>` : "";
     slot.innerHTML = `
-      ${explain ? `<div class="explain"><strong>${verdict}</strong>${esc(explain)}</div>` : ""}
+      ${explain ? `<div class="explain"><strong>${verdict}</strong>${esc(explain)}${srcLine}</div>` : ""}
       <div class="next-wrap"><button class="btn btn-primary" id="next-q">${idx + 1 >= items.length ? "See results" : "Next →"}</button></div>`;
     document.getElementById("next-q").addEventListener("click", () => {
       idx++;
